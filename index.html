@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Homework Tracker</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <style>
         * {
             margin: 0;
@@ -267,7 +270,7 @@
         </div>
 
         <div class="timer-section">
-            <div class="timer-mode" id="timerMode">📖 Focus Time</div>
+            <div class="timer-mode" id="timerMode">🍅 Focus Time</div>
             <div class="timer-display" id="timerDisplay">25:00</div>
             <div class="timer-controls">
                 <button class="timer-btn" onclick="startTimer()">Start</button>
@@ -426,7 +429,7 @@
             if (isBreak) {
                 modeElement.textContent = '☕ Break Time';
             } else {
-                modeElement.textContent = '📖 Focus Time';
+                modeElement.textContent = '🍅 Focus Time';
             }
             document.getElementById('pomodoroCount').textContent = `Pomodoros completed: ${pomodorosCompleted}`;
         }
@@ -444,7 +447,7 @@
                 if (isBreak) {
                     new Notification("Pomodoro Timer", {
                         body: "Break time is over! Ready to focus?",
-                        icon: "📖"
+                        icon: "🍅"
                     });
                 } else {
                     new Notification("Pomodoro Timer", {
