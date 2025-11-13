@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homework Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input[type="text"], input[type="date"], select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="date"]:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+
+        .assignments-list {
+            margin-top: 20px;
+        }
+
+        .assignment-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .assignment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .assignment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .assignment-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .assignment-date {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .days-left {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .days-left.urgent {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .days-left.soon {
+            background: #feca57;
+            color: #333;
+        }
+
+        .days-left.ok {
+            background: #48dbfb;
+            color: white;
+        }
+
+        .days-left.good {
+            background: #1dd1a1;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .delete-btn:hover {
+            background: #ee5a52;
+        }
+
+        .no-assignments {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+            font-size: 1.2em;
+        }
+
+        .timer-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .timer-mode {
+            font-size: 1.2em;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .timer-display {
+            font-size: 4em;
+            color: #667eea;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .timer-display.break {
+            color: #1dd1a1;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .timer-btn {
+            background: #764ba2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+            font-weight: 600;
+        }
+
+        .timer-btn:hover {
+            background: #5a3780;
+        }
+
+        .timer-btn.active {
+            background: #1dd1a1;
+        }
+
+        .pomodoro-count {
+            font-size: 1.1em;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .assignment-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .delete-btn {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Homework Tracker</h1>
+        
+        <div class="input-section">
+            <h2 style="margin-bottom: 20px; color: #667eea;">Create New Assignment</h2>
+            <div class="form-group">
+                <label>Assignment Name</label>
+                <input type="text" id="assignmentName" placeholder="e.g., Math homework, Science project">
+            </div>
+            <div class="form-group">
+                <label>Due Date</label>
+                <input type="date" id="dueDate">
+            </div>
+            <button class="btn" onclick="addAssignment()">➕ Add Assignment</button>
+        </div>
+
+        <div class="timer-section">
+            <div class="timer-mode" id="timerMode">📖 Focus Time</div>
+            <div class="timer-display" id="timerDisplay">25:00</div>
+            <div class="timer-controls">
+                <button class="timer-btn" onclick="startTimer()">Start</button>
+                <button class="timer-btn" onclick="pauseTimer()">Pause</button>
+                <button class="timer-btn" onclick="resetTimer()">Reset</button>
+                <button class="timer-btn" onclick="skipTimer()">Skip</button>
+            </div>
+            <div class="pomodoro-count" id="pomodoroCount">Pomodoros completed: 0</div>
+        </div>
+
+        <div class="assignments-list">
+            <h2 style="margin-bottom: 20px; color: #667eea;">Your Assignments</h2>
+            <div id="assignmentsList"></div>
+        </div>
+    </div>
+
+    <script>
+        let assignments = [];
+        let timerSeconds = 1500; // 25 minutes in seconds
+        let timerInterval = null;
+        let timerRunning = false;
+        let isBreak = false;
+        let pomodorosCompleted = 0;
+        let threeMinuteWarningShown = false;
+
+        const FOCUS_TIME = 1500; // 25 minutes
+        const SHORT_BREAK = 300; // 5 minutes
+        const LONG_BREAK = 900; // 15 minutes
+
+        // Request notification permission on page load
+        if ("Notification" in window && Notification.permission === "default") {
+            Notification.requestPermission();
+        }
+
+        function loadAssignments() {
+            const saved = localStorage.getItem('assignments');
+            if (saved) {
+                assignments = JSON.parse(saved);
+                displayAssignments();
+            }
+        }
+
+        function saveAssignments() {
+            localStorage.setItem('assignments', JSON.stringify(assignments));
+        }
+
+        function addAssignment() {
+            const name = document.getElementById('assignmentName').value;
+            const dueDate = document.getElementById('dueDate').value;
+
+            if (!name || !dueDate) {
+                alert('Please fill in all fields!');
+                return;
+            }
+
+            const assignment = {
+                id: Date.now(),
+                name: name,
+                dueDate: dueDate
+            };
+
+            assignments.push(assignment);
+            saveAssignments();
+            displayAssignments();
+
+            document.getElementById('assignmentName').value = '';
+            document.getElementById('dueDate').value = '';
+        }
+
+        function deleteAssignment(id) {
+            assignments = assignments.filter(a => a.id !== id);
+            saveAssignments();
+            displayAssignments();
+        }
+
+        function calculateDaysLeft(dueDate) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const due = new Date(dueDate);
+            due.setHours(0, 0, 0, 0);
+            const diffTime = due - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays;
+        }
+
+        function getDaysLeftClass(days) {
+            if (days < 0) return 'urgent';
+            if (days <= 2) return 'urgent';
+            if (days <= 5) return 'soon';
+            if (days <= 7) return 'ok';
+            return 'good';
+        }
+
+        function getDaysLeftText(days) {
+            if (days < 0) return `${Math.abs(days)} days overdue!`;
+            if (days === 0) return 'Due today!';
+            if (days === 1) return '1 day left';
+            return `${days} days left`;
+        }
+
+        function displayAssignments() {
+            const listElement = document.getElementById('assignmentsList');
+            
+            if (assignments.length === 0) {
+                listElement.innerHTML = '<div class="no-assignments">No assignments yet. Add one above!</div>';
+                return;
+            }
+
+            assignments.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+
+            listElement.innerHTML = assignments.map(assignment => {
+                const daysLeft = calculateDaysLeft(assignment.dueDate);
+                const daysClass = getDaysLeftClass(daysLeft);
+                const daysText = getDaysLeftText(daysLeft);
+                const [year, month, day] = assignment.dueDate.split('-');
+                const formattedDate = new Date(year, month - 1, day).toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+
+                return `
+                    <div class="assignment-card">
+                        <div class="assignment-header">
+                            <div>
+                                <div class="assignment-name">${assignment.name}</div>
+                                <div class="assignment-date">Due: ${formattedDate}</div>
+                            </div>
+                            <button class="delete-btn" onclick="deleteAssignment(${assignment.id})">Delete</button>
+                        </div>
+                        <span class="days-left ${daysClass}">${daysText}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timerSeconds / 60);
+            const seconds = timerSeconds % 60;
+            
+            const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            document.getElementById('timerDisplay').textContent = display;
+            
+            const displayElement = document.getElementById('timerDisplay');
+            if (isBreak) {
+                displayElement.classList.add('break');
+            } else {
+                displayElement.classList.remove('break');
+            }
+        }
+
+        function updateTimerMode() {
+            const modeElement = document.getElementById('timerMode');
+            if (isBreak) {
+                modeElement.textContent = '☕ Break Time';
+            } else {
+                modeElement.textContent = '📖 Focus Time';
+            }
+            document.getElementById('pomodoroCount').textContent = `Pomodoros completed: ${pomodorosCompleted}`;
+        }
+
+        function playNotification() {
+            // Visual notification
+            if (isBreak) {
+                alert('Break time is over! Ready to focus?');
+            } else {
+                alert('Great work! Time for a break!');
+            }
+            
+            // Browser notification
+            if ("Notification" in window && Notification.permission === "granted") {
+                if (isBreak) {
+                    new Notification("Pomodoro Timer", {
+                        body: "Break time is over! Ready to focus?",
+                        icon: "📖"
+                    });
+                } else {
+                    new Notification("Pomodoro Timer", {
+                        body: "Great work! Time for a break!",
+                        icon: "☕"
+                    });
+                }
+            }
+        }
+
+        function show3MinuteWarning() {
+            // Visual alert
+            alert('⏰ 3 minutes left in this session!');
+            
+            // Browser notification
+            if ("Notification" in window && Notification.permission === "granted") {
+                if (isBreak) {
+                    new Notification("Pomodoro Timer", {
+                        body: "3 minutes left in your break!",
+                        icon: "⏰"
+                    });
+                } else {
+                    new Notification("Pomodoro Timer", {
+                        body: "3 minutes left! Keep focusing!",
+                        icon: "⏰"
+                    });
+                }
+            }
+        }
+
+        function startTimer() {
+            if (!timerRunning) {
+                timerRunning = true;
+                timerInterval = setInterval(() => {
+                    timerSeconds--;
+                    updateTimerDisplay();
+                    
+                    // Show 3-minute warning
+                    if (timerSeconds === 180 && !threeMinuteWarningShown) {
+                        threeMinuteWarningShown = true;
+                        show3MinuteWarning();
+                    }
+                    
+                    if (timerSeconds <= 0) {
+                        pauseTimer();
+                        
+                        if (!isBreak) {
+                            pomodorosCompleted++;
+                            playNotification();
+                            
+                            // Determine break length
+                            if (pomodorosCompleted % 4 === 0) {
+                                timerSeconds = LONG_BREAK;
+                            } else {
+                                timerSeconds = SHORT_BREAK;
+                            }
+                            isBreak = true;
+                        } else {
+                            playNotification();
+                            timerSeconds = FOCUS_TIME;
+                            isBreak = false;
+                        }
+                        
+                        threeMinuteWarningShown = false;
+                        updateTimerMode();
+                        updateTimerDisplay();
+                    }
+                }, 1000);
+            }
+        }
+
+        function pauseTimer() {
+            timerRunning = false;
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            timerSeconds = FOCUS_TIME;
+            isBreak = false;
+            threeMinuteWarningShown = false;
+            updateTimerMode();
+            updateTimerDisplay();
+        }
+
+        function skipTimer() {
+            pauseTimer();
+            
+            if (!isBreak) {
+                pomodorosCompleted++;
+                if (pomodorosCompleted % 4 === 0) {
+                    timerSeconds = LONG_BREAK;
+                } else {
+                    timerSeconds = SHORT_BREAK;
+                }
+                isBreak = true;
+            } else {
+                timerSeconds = FOCUS_TIME;
+                isBreak = false;
+            }
+            
+            threeMinuteWarningShown = false;
+            updateTimerMode();
+            updateTimerDisplay();
+        }
+
+        loadAssignments();
+    </script>
+</body>
+</html>
